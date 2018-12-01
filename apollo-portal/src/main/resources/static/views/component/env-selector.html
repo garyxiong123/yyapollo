@@ -1,0 +1,18 @@
+<table class="table table-hover" style="width: 250px">
+    <thead>
+    <tr>
+        <td><input type="checkbox" ng-checked="envAllSelected" ng-click="toggleEnvsCheckedStatus()"></td>
+        </td>
+        <td>环境</td>
+        <td>集群</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr style="cursor: pointer" ng-repeat="clusterEntity in clusterEntities" ng-click="toggleClusterCheckedStatus(clusterEntity)">
+        <td width="10%"><input type="checkbox" ng-checked="clusterEntity.checked"
+                               ng-click="switchSelect(clusterEntity, $event)"></td>
+        <td width="30%" ng-bind="clusterEntity.env"></td>
+        <td width="60%" ng-bind="clusterEntity.name"></td>
+    </tr>
+    </tbody>
+</table>
