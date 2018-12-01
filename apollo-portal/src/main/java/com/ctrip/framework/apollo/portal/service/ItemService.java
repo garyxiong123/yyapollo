@@ -250,7 +250,7 @@ public class ItemService {
     public List<Item> findItems(String appId, Env env, String clusterName, String namespaceName) {
         Namespace namespace = namespaceService.findOne(appId, clusterName, namespaceName);
 
-        return itemRepository.findByNamespaceId(namespace.getId());
+        return itemRepository.findByNamespaceIdAndEnv(namespace.getId(), env.name());
     }
 
     public Item loadItem(Env env, String appId, String clusterName, String namespaceName, String key) {
@@ -370,8 +370,8 @@ public class ItemService {
 
     @Transactional
     public Item save(Item entity) {
-        checkItemKeyLength(entity.getKey());
-        checkItemValueLength(entity.getNamespaceId(), entity.getValue());
+//        checkItemKeyLength(entity.getKey());
+//        checkItemValueLength(entity.getNamespaceId(), entity.getValue());
 
         entity.setId(0);//protection
 
@@ -391,7 +391,7 @@ public class ItemService {
 
     @Transactional
     public Item update(Item item) {
-        checkItemValueLength(item.getNamespaceId(), item.getValue());
+//        checkItemValueLength(item.getNamespaceId(), item.getValue());
         Item managedItem = itemRepository.findById(item.getId()).get();
         BeanUtils.copyEntityProperties(item, managedItem);
         managedItem = itemRepository.save(managedItem);

@@ -160,38 +160,41 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                         var branchItemsMap = {};
 
                         var itemModifiedCnt = 0;
-                        branch.items.forEach(function (item) {
-                            var key = item.item.key;
-                            var masterItem = masterItemsMap[key];
+                        if(branch.items != null) {
+                            branch.items.forEach(function (item) {
+                                var key = item.item.key;
+                                var masterItem = masterItemsMap[key];
 
-                            //modify master item and set item's masterReleaseValue
-                            if (masterItem) {
-                                if (masterItem.isModified && masterItem.oldValue) {
-                                    item.masterReleaseValue = masterItem.oldValue;
-                                } else if (masterItem.item.value) {
-                                    item.masterReleaseValue = masterItem.item.value;
+                                //modify master item and set item's masterReleaseValue
+                                if (masterItem) {
+                                    if (masterItem.isModified && masterItem.oldValue) {
+                                        item.masterReleaseValue = masterItem.oldValue;
+                                    } else if (masterItem.item.value) {
+                                        item.masterReleaseValue = masterItem.item.value;
+                                    }
+
+                                } else {//delete branch item
+                                    item.masterReleaseValue = '';
                                 }
 
-                            } else {//delete branch item
-                                item.masterReleaseValue = '';
-                            }
+                                //delete master item. ignore
+                                if (item.isDeleted && masterItem) {
+                                    if (item.masterReleaseValue != item.oldValue) {
+                                        itemModifiedCnt++;
+                                        branch.branchItems.push(item);
+                                    }
+                                } else {//branch's item
+                                    branchItemsMap[key] = item;
 
-                            //delete master item. ignore
-                            if (item.isDeleted && masterItem) {
-                                if (item.masterReleaseValue != item.oldValue) {
-                                    itemModifiedCnt++;
+                                    if (item.isModified) {
+                                        itemModifiedCnt++;
+                                    }
                                     branch.branchItems.push(item);
                                 }
-                            } else {//branch's item
-                                branchItemsMap[key] = item;
 
-                                if (item.isModified) {
-                                    itemModifiedCnt++;
-                                }
-                                branch.branchItems.push(item);
-                            }
+                            });
 
-                        });
+                        }
                         branch.itemModifiedCnt = itemModifiedCnt;
 
                         branch.parentNamespace.items.forEach(function (item) {
@@ -578,7 +581,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
 
                 NamespaceBranchService.findBranchGrayRules(scope.appId,
                                                            scope.env,
-                                                           scope.cluster,
+                                                           branch.baseInfo.clusterName,
                                                            scope.namespace.baseInfo.namespaceName,
                                                            branch.baseInfo.clusterName)
                     .then(function (result) {
@@ -588,6 +591,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                         }
 
                     }, function (result) {
+                        debugger
                         toastr.error(AppUtil.errorMsg(result), "加载灰度规则出错");
                     });
 
@@ -694,6 +698,9 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                     return;
                 }
                 namespace.commitChangeBtnDisabled = true;
+                if(scope.cluster == null){
+                    scope.cluster = "default";
+                }
                 ConfigService.modify_items(scope.appId,
                                            scope.env,
                                            scope.cluster,
