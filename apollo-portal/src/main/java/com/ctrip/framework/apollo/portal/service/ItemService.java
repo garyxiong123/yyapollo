@@ -9,26 +9,23 @@ import com.ctrip.framework.apollo.config.BizConfig;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
+import com.ctrip.framework.apollo.model.NamespaceTextModel;
 import com.ctrip.framework.apollo.portal.component.txtresolver.ConfigTextResolver;
 import com.ctrip.framework.apollo.portal.constant.TracerEventType;
 import com.ctrip.framework.apollo.portal.entity.AuditEntity;
 import com.ctrip.framework.apollo.portal.entity.Item;
 import com.ctrip.framework.apollo.portal.entity.Namespace;
-import com.ctrip.framework.apollo.model.NamespaceTextModel;
-import com.ctrip.framework.apollo.portal.util.ConfigChangeContentBuilder;
-import com.ctrip.framework.apollo.vo.ItemDiffs;
-import com.ctrip.framework.apollo.vo.NamespaceIdentifier;
 import com.ctrip.framework.apollo.portal.repository.ItemRepository;
 import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.util.ConfigChangeContentBuilder;
 import com.ctrip.framework.apollo.tracer.Tracer;
-
+import com.ctrip.framework.apollo.vo.ItemDiffs;
+import com.ctrip.framework.apollo.vo.NamespaceIdentifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.*;
 
@@ -117,15 +114,6 @@ public class ItemService {
 
     }
 
-//    public Item findOne(String appId, String clusterName, String namespaceName, String key) {
-//        Namespace namespace = namespaceService.findOne(appId, clusterName, namespaceName);
-//        if (namespace == null) {
-//            throw new NotFoundException(
-//                    String.format("namespace not found for %s %s %s", appId, clusterName, namespaceName));
-//        }
-//        Item item = itemRepository.findByNamespaceIdAndKeyAndEnv(namespace.getId(), key);
-//        return item;
-//    }
 
     public Item findOne(long itemId) {
         Item item = itemRepository.findById(itemId).get();
@@ -150,71 +138,54 @@ public class ItemService {
 
 
         ItemChangeSets changeSets = resolver.resolve(namespaceId, configText,
-                itemRepository.findByNamespaceId(namespaceId));
+                itemRepository.findByNamespaceIdAndEnv(namespaceId, env.name()));
         if (changeSets.isEmpty()) {
             return;
         }
 
         changeSets.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
         updateItems(appId, env, clusterName, namespaceName, changeSets);
-
-        Tracer.logEvent(TracerEventType.MODIFY_NAMESPACE_BY_TEXT,
-                String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
-        Tracer.logEvent(TracerEventType.MODIFY_NAMESPACE, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
     }
 
     public void updateItems(String appId, Env env, String clusterName, String namespaceName, ItemChangeSets changeSets) {
-          String operator = changeSets.getDataChangeLastModifiedBy();
-    ConfigChangeContentBuilder configChangeContentBuilder = new ConfigChangeContentBuilder();
+        String operator = changeSets.getDataChangeLastModifiedBy();
+        ConfigChangeContentBuilder configChangeContentBuilder = new ConfigChangeContentBuilder();
 
-    if (!CollectionUtils.isEmpty(changeSets.getCreateItems())) {
-      for (Item item : changeSets.getCreateItems()) {
-        Item entity = BeanUtils.transfrom(Item.class, item);
-        entity.setDataChangeCreatedBy(operator);
-        entity.setDataChangeLastModifiedBy(operator);
-        Item createdItem = save(entity);
-        configChangeContentBuilder.createItem(createdItem);
-      }
-      auditService.audit("ItemSet", null, AuditEntity.OP.INSERT, operator);
-    }
-
-    if (!CollectionUtils.isEmpty(changeSets.getUpdateItems())) {
-      for (Item item : changeSets.getUpdateItems()) {
-        Item entity = BeanUtils.transfrom(Item.class, item);
-
-        Item managedItem = findOne(entity.getId());
-        if (managedItem == null) {
-          throw new NotFoundException(String.format("item not found.(key=%s)", entity.getKey()));
+        if (!CollectionUtils.isEmpty(changeSets.getCreateItems())) {
+            for (Item item : changeSets.getCreateItems()) {
+                Item entity = BeanUtils.transfrom(Item.class, item);
+                entity.setDataChangeCreatedBy(operator);
+                entity.setDataChangeLastModifiedBy(operator);
+                entity.setEnv(env.name());
+                Item createdItem = save(entity);
+                configChangeContentBuilder.createItem(createdItem);
+            }
+            auditService.audit("ItemSet", null, AuditEntity.OP.INSERT, operator);
         }
-        Item beforeUpdateItem = BeanUtils.transfrom(Item.class, managedItem);
 
-        //protect. only value,comment,lastModifiedBy,lineNum can be modified
-        managedItem.setValue(entity.getValue());
-        managedItem.setComment(entity.getComment());
-        managedItem.setLineNum(entity.getLineNum());
-        managedItem.setDataChangeLastModifiedBy(operator);
+        if (!CollectionUtils.isEmpty(changeSets.getUpdateItems())) {
+            for (Item item : changeSets.getUpdateItems()) {
+                Item entity = BeanUtils.transfrom(Item.class, item);
 
-        Item updatedItem = update(managedItem);
-        configChangeContentBuilder.updateItem(beforeUpdateItem, updatedItem);
+                Item managedItem = findOne(entity.getId());
+                if (managedItem == null) {
+                    throw new NotFoundException(String.format("item not found.(key=%s)", entity.getKey()));
+                }
+                Item beforeUpdateItem = BeanUtils.transfrom(Item.class, managedItem);
 
-      }
-      auditService.audit("ItemSet", null, AuditEntity.OP.UPDATE, operator);
-    }
+                //protect. only value,comment,lastModifiedBy,lineNum can be modified
+                managedItem.setValue(entity.getValue());
+                managedItem.setComment(entity.getComment());
+                managedItem.setLineNum(entity.getLineNum());
+                managedItem.setDataChangeLastModifiedBy(operator);
+                managedItem.setEnv(env.name());
 
-//    if (!CollectionUtils.isEmpty(changeSets.getDeleteItems())) {
-//      for (Item item : changeSets.getDeleteItems()) {
-//        Item deletedItem = delete(item.getId(), operator);
-//        configChangeContentBuilder.deleteItem(deletedItem);
-//      }
-//      auditService.audit("ItemSet", null, AuditEntity.OP.DELETE, operator);
-//    }
+                Item updatedItem = update(managedItem);
+                configChangeContentBuilder.updateItem(beforeUpdateItem, updatedItem);
 
-//    if (configChangeContentBuilder.hasContent()){
-//      createCommit(appId, clusterName, namespaceName, configChangeContentBuilder.build(),
-//                   changeSets.getDataChangeLastModifiedBy());
-//    }
-
-//        itemAPI.updateItemsByChangeSet(appId, env, clusterName, namespaceName, changeSets);
+            }
+            auditService.audit("ItemSet", null, AuditEntity.OP.UPDATE, operator);
+        }
     }
 
 
@@ -255,7 +226,7 @@ public class ItemService {
 
     public Item loadItem(Env env, String appId, String clusterName, String namespaceName, String key) {
 
-        Long namespaceId = namespaceService.findOne(appId,clusterName,namespaceName).getId();
+        Long namespaceId = namespaceService.findOne(appId, clusterName, namespaceName).getId();
         return itemRepository.findByNamespaceIdAndKeyAndEnv(namespaceId, key, env.name());
     }
 
@@ -301,7 +272,7 @@ public class ItemService {
         String clusterName = namespaceIdentifier.getClusterName();
         String namespaceName = namespaceIdentifier.getNamespaceName();
         Env env = namespaceIdentifier.getEnv();
-      Long namespaceId = namespaceService.findOne(appId,clusterName,namespaceName).getId();
+        Long namespaceId = namespaceService.findOne(appId, clusterName, namespaceName).getId();
         return namespaceId;
     }
 
