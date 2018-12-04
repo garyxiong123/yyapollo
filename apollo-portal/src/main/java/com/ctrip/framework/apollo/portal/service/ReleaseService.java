@@ -629,6 +629,13 @@ public class ReleaseService {
                 namespaceName);
     }
 
+    public Release findActiveOne(long releaseId) {
+        return releaseRepository.findByIdAndIsAbandonedFalse(releaseId);
+    }
+
+
+
+
     private Map<String, String> calculateChildNamespaceToPublishConfiguration(
             Map<String, String> parentNamespaceOldConfiguration,
             Map<String, String> parentNamespaceNewConfiguration,

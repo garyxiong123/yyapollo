@@ -11,8 +11,10 @@ import java.util.Date;
 @Entity
 @Table(name = "Instance")
 public class Instance {
+
+//  @GeneratedValue
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "Id")
   private long id;
 

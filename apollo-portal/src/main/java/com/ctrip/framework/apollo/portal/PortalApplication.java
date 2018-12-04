@@ -8,12 +8,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+@ComponentScan(basePackageClasses = {ApolloCommonConfig.class,
+    PortalApplication.class})
 @EnableAspectJAutoProxy
 @Configuration
 @EnableAutoConfiguration
 @EnableTransactionManagement
-@ComponentScan(basePackageClasses = {ApolloCommonConfig.class,
-    PortalApplication.class})
 public class PortalApplication {
 
   public static void main(String[] args) {

@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import com.ctrip.framework.apollo.common.entity.App;
 
 import org.springframework.context.ApplicationEvent;
+import org.springframework.stereotype.Component;
 
 public class AppCreationEvent extends ApplicationEvent {
 

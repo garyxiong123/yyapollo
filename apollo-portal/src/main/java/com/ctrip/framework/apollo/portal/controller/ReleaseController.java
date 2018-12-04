@@ -1,13 +1,20 @@
 package com.ctrip.framework.apollo.portal.controller;
 
+import com.ctrip.framework.apollo.bo.ItemChangeSets;
+import com.ctrip.framework.apollo.common.constants.NamespaceBranchStatus;
+import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.common.exception.NotFoundException;
+import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.component.PermissionValidator;
 import com.ctrip.framework.apollo.portal.component.config.PortalConfig;
 import com.ctrip.framework.apollo.model.NamespaceReleaseModel;
 import com.ctrip.framework.apollo.portal.entity.Release;
+import com.ctrip.framework.apollo.portal.message.MessageSender;
+import com.ctrip.framework.apollo.portal.message.Topics;
+import com.ctrip.framework.apollo.portal.util.ReleaseMessageKeyGenerator;
 import com.ctrip.framework.apollo.vo.ReleaseCompareResult;
 import com.ctrip.framework.apollo.bo.ReleaseBO;
 import com.ctrip.framework.apollo.portal.listener.ConfigPublishEvent;
@@ -18,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +49,8 @@ public class ReleaseController {
   private PortalConfig portalConfig;
   @Autowired
   private PermissionValidator permissionValidator;
+  @Autowired
+  private MessageSender messageSender;
 
   @PreAuthorize(value = "@permissionValidator.hasReleaseNamespacePermission(#appId, #namespaceName, #env)")
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/releases", method = RequestMethod.POST)
@@ -71,6 +81,9 @@ public class ReleaseController {
         .setEnv(Env.valueOf(env));
 
     publisher.publishEvent(event);
+    //发送 发布消息的历史记录
+    messageSender.sendMessage(ReleaseMessageKeyGenerator.generate(appId, clusterName, namespaceName),
+            Topics.APOLLO_RELEASE_TOPIC);
 
     return createdRelease;
   }
@@ -178,4 +191,39 @@ public class ReleaseController {
 
     publisher.publishEvent(event);
   }
+
+
+//
+//  @Transactional
+//  @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/updateAndPublish", method = RequestMethod.POST)
+//  public Release updateAndPublish(@PathVariable("appId") String appId,
+//                                     @PathVariable("clusterName") String clusterName,
+//                                     @PathVariable("namespaceName") String namespaceName,
+//                                     @RequestParam("releaseName") String releaseName,
+//                                     @RequestParam("branchName") String branchName,
+//                                     @RequestParam(value = "deleteBranch", defaultValue = "true") boolean deleteBranch,
+//                                     @RequestParam(name = "releaseComment", required = false) String releaseComment,
+//                                     @RequestParam(name = "isEmergencyPublish", defaultValue = "false") boolean isEmergencyPublish,
+//                                     @RequestBody ItemChangeSets changeSets) {
+//    Namespace namespace = namespaceService.findOne(appId, clusterName, namespaceName);
+//    if (namespace == null) {
+//      throw new NotFoundException(String.format("Could not find namespace for %s %s %s", appId,
+//              clusterName, namespaceName));
+//    }
+//
+//    Release release = releaseService.mergeBranchChangeSetsAndRelease(namespace, branchName, releaseName,
+//            releaseComment, isEmergencyPublish, changeSets);
+//
+//    if (deleteBranch) {
+//      namespaceBranchService.deleteBranch(appId, clusterName, namespaceName, branchName,
+//              NamespaceBranchStatus.MERGED, changeSets.getDataChangeLastModifiedBy());
+//    }
+//
+//    messageSender.sendMessage(ReleaseMessageKeyGenerator.generate(appId, clusterName, namespaceName),
+//            Topics.APOLLO_RELEASE_TOPIC);
+//
+//    return BeanUtils.transfrom(ReleaseDTO.class, release);
+//
+//  }
+
 }

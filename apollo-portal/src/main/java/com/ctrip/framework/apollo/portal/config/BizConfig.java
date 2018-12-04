@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.config;
+package com.ctrip.framework.apollo.portal.config;
 
 import com.ctrip.framework.apollo.common.config.RefreshableConfig;
 import com.ctrip.framework.apollo.common.config.RefreshablePropertySource;

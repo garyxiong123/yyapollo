@@ -49,18 +49,13 @@ public class DatabaseMessageSender implements MessageSender {
       return;
     }
 
-    Tracer.logEvent("Apollo.AdminService.ReleaseMessage", message);
-    Transaction transaction = Tracer.newTransaction("Apollo.AdminService", "sendMessage");
     try {
       ReleaseMessage newMessage = releaseMessageRepository.save(new ReleaseMessage(message));
       toClean.offer(newMessage.getId());
-      transaction.setStatus(Transaction.SUCCESS);
     } catch (Throwable ex) {
       logger.error("Sending message to database failed", ex);
-      transaction.setStatus(ex);
       throw ex;
     } finally {
-      transaction.complete();
     }
   }
 

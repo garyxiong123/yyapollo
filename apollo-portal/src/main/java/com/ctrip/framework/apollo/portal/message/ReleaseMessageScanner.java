@@ -1,6 +1,6 @@
 package com.ctrip.framework.apollo.portal.message;
 
-import com.ctrip.framework.apollo.config.BizConfig;
+import com.ctrip.framework.apollo.portal.config.BizConfig;
 import com.ctrip.framework.apollo.core.utils.ApolloThreadFactory;
 import com.ctrip.framework.apollo.portal.entity.ReleaseMessage;
 import com.ctrip.framework.apollo.portal.repository.ReleaseMessageRepository;
@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
