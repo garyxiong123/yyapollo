@@ -38,7 +38,7 @@ CREATE TABLE `App` (
   KEY `AppId` (`AppId`(191)),
   KEY `DataChange_LastTime` (`DataChange_LastTime`),
   KEY `IX_Name` (`Name`(191))
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='应用表';
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='应用表';
 
 -- ----------------------------
 -- Records of App
@@ -80,7 +80,7 @@ CREATE TABLE `AppNamespace` (
   KEY `IX_AppId` (`AppId`),
   KEY `Name_AppId` (`Name`,`AppId`),
   KEY `DataChange_LastTime` (`DataChange_LastTime`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='应用namespace定义';
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='应用namespace定义';
 
 -- ----------------------------
 -- Records of AppNamespace
@@ -126,7 +126,7 @@ CREATE TABLE `Audit` (
   `DataChange_LastTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`Id`),
   KEY `DataChange_LastTime` (`DataChange_LastTime`)
-) ENGINE=InnoDB AUTO_INCREMENT=237 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='日志审计表';
+) ENGINE=InnoDB AUTO_INCREMENT=237 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='日志审计表';
 
 -- ----------------------------
 -- Records of Audit
@@ -377,7 +377,7 @@ CREATE TABLE `Authorities` (
   `Username` varchar(50) NOT NULL,
   `Authority` varchar(50) NOT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of Authorities
@@ -404,7 +404,7 @@ CREATE TABLE `Cluster` (
   KEY `IX_AppId_Name` (`AppId`,`Name`),
   KEY `IX_ParentClusterId` (`ParentClusterId`),
   KEY `DataChange_LastTime` (`DataChange_LastTime`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='集群';
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='集群';
 
 -- ----------------------------
 -- Records of Cluster
@@ -441,7 +441,7 @@ CREATE TABLE `Commit` (
   KEY `AppId` (`AppId`(191)),
   KEY `ClusterName` (`ClusterName`(191)),
   KEY `NamespaceName` (`NamespaceName`(191))
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='commit 历史表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='commit 历史表';
 
 -- ----------------------------
 -- Records of Commit
@@ -471,7 +471,7 @@ CREATE TABLE `Consumer` (
   PRIMARY KEY (`Id`),
   KEY `AppId` (`AppId`(191)),
   KEY `DataChange_LastTime` (`DataChange_LastTime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='开放API消费者';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='开放API消费者';
 
 -- ----------------------------
 -- Table structure for ConsumerAudit
@@ -487,7 +487,7 @@ CREATE TABLE `ConsumerAudit` (
   PRIMARY KEY (`Id`),
   KEY `IX_DataChange_LastTime` (`DataChange_LastTime`),
   KEY `IX_ConsumerId` (`ConsumerId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='consumer审计表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='consumer审计表';
 
 -- ----------------------------
 -- Table structure for ConsumerRole
@@ -506,7 +506,7 @@ CREATE TABLE `ConsumerRole` (
   KEY `IX_DataChange_LastTime` (`DataChange_LastTime`),
   KEY `IX_RoleId` (`RoleId`),
   KEY `IX_ConsumerId_RoleId` (`ConsumerId`,`RoleId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='consumer和role的绑定表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='consumer和role的绑定表';
 
 -- ----------------------------
 -- Table structure for ConsumerToken
@@ -525,7 +525,7 @@ CREATE TABLE `ConsumerToken` (
   PRIMARY KEY (`Id`),
   UNIQUE KEY `IX_Token` (`Token`),
   KEY `DataChange_LastTime` (`DataChange_LastTime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='consumer token表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='consumer token表';
 
 -- ----------------------------
 -- Table structure for Favorite
@@ -545,7 +545,7 @@ CREATE TABLE `Favorite` (
   KEY `AppId` (`AppId`(191)),
   KEY `IX_UserId` (`UserId`),
   KEY `DataChange_LastTime` (`DataChange_LastTime`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='应用收藏表';
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='应用收藏表';
 
 -- ----------------------------
 -- Table structure for GrayReleaseRule
@@ -568,7 +568,7 @@ CREATE TABLE `GrayReleaseRule` (
   PRIMARY KEY (`Id`),
   KEY `DataChange_LastTime` (`DataChange_LastTime`),
   KEY `IX_Namespace` (`AppId`,`ClusterName`,`NamespaceName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='灰度规则表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='灰度规则表';
 
 -- ----------------------------
 -- Table structure for Instance
@@ -587,7 +587,7 @@ CREATE TABLE `Instance` (
   UNIQUE KEY `IX_UNIQUE_KEY` (`AppId`,`ClusterName`,`Ip`,`DataCenter`),
   KEY `IX_IP` (`Ip`),
   KEY `IX_DataChange_LastTime` (`DataChange_LastTime`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='使用配置的应用实例';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='使用配置的应用实例';
 
 -- ----------------------------
 -- Records of Instance
@@ -615,7 +615,7 @@ CREATE TABLE `InstanceConfig` (
   KEY `IX_ReleaseKey` (`ReleaseKey`),
   KEY `IX_DataChange_LastTime` (`DataChange_LastTime`),
   KEY `IX_Valid_Namespace` (`ConfigAppId`,`ConfigClusterName`,`ConfigNamespaceName`,`DataChange_LastTime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='应用实例的配置信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='应用实例的配置信息';
 
 -- ----------------------------
 -- Table structure for Item
@@ -637,7 +637,7 @@ CREATE TABLE `Item` (
   PRIMARY KEY (`Id`),
   KEY `IX_GroupId` (`NamespaceId`),
   KEY `DataChange_LastTime` (`DataChange_LastTime`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='配置项目';
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='配置项目';
 
 -- ----------------------------
 -- Records of Item
@@ -693,7 +693,7 @@ CREATE TABLE `Namespace` (
   KEY `AppId_ClusterName_NamespaceName` (`AppId`(191),`ClusterName`(191),`NamespaceName`(191)),
   KEY `DataChange_LastTime` (`DataChange_LastTime`),
   KEY `IX_NamespaceName` (`NamespaceName`(191))
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='命名空间';
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='命名空间';
 
 -- ----------------------------
 -- Records of Namespace
@@ -731,7 +731,7 @@ CREATE TABLE `NamespaceLock` (
   PRIMARY KEY (`Id`),
   UNIQUE KEY `IX_NamespaceId` (`NamespaceId`),
   KEY `DataChange_LastTime` (`DataChange_LastTime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='namespace的编辑锁';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='namespace的编辑锁';
 
 -- ----------------------------
 -- Table structure for Permission
@@ -749,7 +749,7 @@ CREATE TABLE `Permission` (
   PRIMARY KEY (`Id`),
   KEY `IX_TargetId_PermissionType` (`TargetId`(191),`PermissionType`),
   KEY `IX_DataChange_LastTime` (`DataChange_LastTime`)
-) ENGINE=InnoDB AUTO_INCREMENT=134 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='permission表';
+) ENGINE=InnoDB AUTO_INCREMENT=134 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='permission表';
 
 -- ----------------------------
 -- Records of Permission
@@ -909,7 +909,7 @@ CREATE TABLE `Release` (
   KEY `AppId_ClusterName_GroupName` (`AppId`(191),`ClusterName`(191),`NamespaceName`(191)),
   KEY `DataChange_LastTime` (`DataChange_LastTime`),
   KEY `IX_ReleaseKey` (`ReleaseKey`)
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='发布';
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='发布';
 
 -- ----------------------------
 -- Records of Release
@@ -996,7 +996,7 @@ CREATE TABLE `ReleaseHistory` (
   KEY `IX_Namespace` (`AppId`,`ClusterName`,`NamespaceName`,`BranchName`),
   KEY `IX_ReleaseId` (`ReleaseId`),
   KEY `IX_DataChange_LastTime` (`DataChange_LastTime`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='发布历史';
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='发布历史';
 
 -- ----------------------------
 -- Records of ReleaseHistory
@@ -1070,7 +1070,7 @@ CREATE TABLE `ReleaseMessage` (
   PRIMARY KEY (`Id`),
   KEY `DataChange_LastTime` (`DataChange_LastTime`),
   KEY `IX_Message` (`Message`(191))
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='发布消息';
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='发布消息';
 
 -- ----------------------------
 -- Records of ReleaseMessage
@@ -1098,7 +1098,7 @@ CREATE TABLE `Role` (
   PRIMARY KEY (`Id`),
   KEY `IX_RoleName` (`RoleName`(191)),
   KEY `IX_DataChange_LastTime` (`DataChange_LastTime`)
-) ENGINE=InnoDB AUTO_INCREMENT=104 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色表';
+) ENGINE=InnoDB AUTO_INCREMENT=104 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='角色表';
 
 -- ----------------------------
 -- Records of Role
@@ -1223,7 +1223,7 @@ CREATE TABLE `RolePermission` (
   KEY `IX_DataChange_LastTime` (`DataChange_LastTime`),
   KEY `IX_RoleId` (`RoleId`),
   KEY `IX_PermissionId` (`PermissionId`)
-) ENGINE=InnoDB AUTO_INCREMENT=134 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色和权限的绑定表';
+) ENGINE=InnoDB AUTO_INCREMENT=134 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='角色和权限的绑定表';
 
 -- ----------------------------
 -- Records of RolePermission
@@ -1377,7 +1377,7 @@ CREATE TABLE `ServerConfig` (
   PRIMARY KEY (`Id`),
   KEY `IX_Key` (`Key`),
   KEY `DataChange_LastTime` (`DataChange_LastTime`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='配置服务自身配置';
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='配置服务自身配置';
 
 -- ----------------------------
 -- Records of ServerConfig
@@ -1413,7 +1413,7 @@ CREATE TABLE `UserRole` (
   KEY `IX_DataChange_LastTime` (`DataChange_LastTime`),
   KEY `IX_RoleId` (`RoleId`),
   KEY `IX_UserId_RoleId` (`UserId`,`RoleId`)
-) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户和role的绑定表';
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户和role的绑定表';
 
 -- ----------------------------
 -- Records of UserRole
@@ -1488,7 +1488,7 @@ CREATE TABLE `Users` (
   `Email` varchar(64) NOT NULL DEFAULT 'default' COMMENT '邮箱地址',
   `Enabled` tinyint(4) DEFAULT NULL COMMENT '是否有效',
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户表';
 
 -- ----------------------------
 -- Records of Users
