@@ -21,6 +21,7 @@ import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.util.ReleaseKeyGenerator;
 import com.ctrip.framework.apollo.vo.ReleaseCompareResult;
 import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import org.apache.commons.lang.time.FastDateFormat;
@@ -511,6 +512,11 @@ public class ReleaseService {
         return configurations;
     }
 
+    public List<Release> findByReleaseKeys(Set<String> releaseKeys) {
+        return releaseRepository.findByReleaseKeyIn(releaseKeys);
+    }
+
+
     private Map<String, String> getNamespaceReleaseConfiguration(Namespace namespace) {
         Release release = findLatestActiveRelease(namespace);
         Map<String, String> configuration = new HashMap<>();
@@ -518,6 +524,14 @@ public class ReleaseService {
             configuration = new Gson().fromJson(release.getConfigurations(), GsonType.CONFIG);
         }
         return configuration;
+    }
+
+    public List<Release> findByReleaseIds(Set<Long> releaseIds) {
+        Iterable<Release> releases = releaseRepository.findByIdIn(releaseIds);
+        if (releases == null) {
+            return Collections.emptyList();
+        }
+        return Lists.newArrayList(releases);
     }
 
     private Release createRelease(Namespace namespace, String env, String name, String comment,

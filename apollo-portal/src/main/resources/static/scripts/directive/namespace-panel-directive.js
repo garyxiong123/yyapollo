@@ -276,6 +276,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                         return;
                     }
                     //load public namespace
+                    debugger
                     ConfigService.load_public_namespace_for_associated_namespace(scope.env, scope.appId, scope.cluster,
                                                                                  namespace.baseInfo.namespaceName)
                         .then(function (result) {
@@ -503,9 +504,10 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                     if (!namespace.latestRelease) {
                         return;
                     }
+                    debugger
                     InstanceService.findByReleasesNotIn(scope.appId,
                                                         scope.env,
-                                                        scope.cluster,
+                                                        namespace.baseInfo.clusterName,
                                                         namespace.baseInfo.namespaceName,
                                                         namespace.latestRelease.id)
                         .then(function (result) {
@@ -539,9 +541,10 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                         })
 
                 } else {
+                    debugger
                     InstanceService.findInstancesByNamespace(scope.appId,
                                                              scope.env,
-                                                             scope.cluster,
+                                                             namespace.baseInfo.clusterName,
                                                              namespace.baseInfo.namespaceName,
                                                              '',
                                                              namespace.allInstancesPage)

@@ -2,6 +2,7 @@ package com.ctrip.framework.apollo.common.entity;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
+import lombok.Builder;
 
 import java.util.Date;
 

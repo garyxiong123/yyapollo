@@ -190,7 +190,7 @@ public class ConfigController {
     for (Release release : releases) {
       instanceConfigAuditUtil.audit(appId, cluster, dataCenter, clientIp, release.getAppId(),
           release.getClusterName(),
-          release.getNamespaceName(), release.getReleaseKey());
+          release.getNamespaceName(), release.getReleaseKey(), release.getEnv());
     }
   }
 

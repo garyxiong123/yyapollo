@@ -91,7 +91,7 @@ public class ItemSetService {
   private void createCommit(String appId, String clusterName, String namespaceName, String configChangeContent,
                             String operator) {
 
-    Commit commit = new Commit();
+    Commit commit =  Commit.builder().build();
     commit.setAppId(appId);
     commit.setClusterName(clusterName);
     commit.setNamespaceName(namespaceName);

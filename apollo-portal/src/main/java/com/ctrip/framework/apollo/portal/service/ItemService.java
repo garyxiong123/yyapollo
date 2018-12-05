@@ -13,6 +13,7 @@ import com.ctrip.framework.apollo.model.NamespaceTextModel;
 import com.ctrip.framework.apollo.portal.component.txtresolver.ConfigTextResolver;
 import com.ctrip.framework.apollo.portal.constant.TracerEventType;
 import com.ctrip.framework.apollo.portal.entity.AuditEntity;
+import com.ctrip.framework.apollo.portal.entity.Commit;
 import com.ctrip.framework.apollo.portal.entity.Item;
 import com.ctrip.framework.apollo.portal.entity.Namespace;
 import com.ctrip.framework.apollo.portal.repository.ItemRepository;
@@ -21,6 +22,8 @@ import com.ctrip.framework.apollo.portal.util.ConfigChangeContentBuilder;
 import com.ctrip.framework.apollo.tracer.Tracer;
 import com.ctrip.framework.apollo.vo.ItemDiffs;
 import com.ctrip.framework.apollo.vo.NamespaceIdentifier;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -55,6 +58,11 @@ public class ItemService {
     private AuditService auditService;
     @Autowired(required = false)
     private BizConfig bizConfig;
+
+    @Autowired
+    private CommitService commitService;
+
+    private static final Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
 
     @Transactional
@@ -145,6 +153,15 @@ public class ItemService {
 
         changeSets.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
         updateItems(appId, env, clusterName, namespaceName, changeSets);
+
+        Commit commit = Commit.builder().appId(appId).changeSets(gson.toJson(changeSets)).clusterName(clusterName)
+                .namespaceName(namespaceName).env(env.name()).build();
+        commit.setDataChangeCreatedBy(userInfoHolder.getUser().getUserId());
+        commit.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
+//        commit.setDataChangeCreatedTime();
+//        commit.setDataChangeLastModifiedTime();
+        commitService.save(commit);
+
     }
 
     public void updateItems(String appId, Env env, String clusterName, String namespaceName, ItemChangeSets changeSets) {

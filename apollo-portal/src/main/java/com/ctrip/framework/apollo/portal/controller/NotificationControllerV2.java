@@ -76,7 +76,7 @@ public class NotificationControllerV2 implements ReleaseMessageListener {
     largeNotificationBatchExecutorService = Executors.newSingleThreadExecutor(ApolloThreadFactory.create
         ("NotificationControllerV2", true));
   }
-
+  //拉取通知，根据 appname 和 版本号 取 拿到对应的配置
   @RequestMapping(method = RequestMethod.GET)
   public DeferredResult<ResponseEntity<List<ApolloConfigNotification>>> pollNotification(
       @RequestParam(value = "appId") String appId,

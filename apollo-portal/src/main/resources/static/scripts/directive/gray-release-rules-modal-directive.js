@@ -184,9 +184,10 @@ function rulesModalDirective(toastr, AppUtil, EventManager, InstanceService) {
                 if (!scope.branch.editingRuleItem.clientAppId) {
                     return;
                 }
+                debugger
                 InstanceService.findInstancesByNamespace(scope.appId,
                                                          scope.env,
-                                                         scope.cluster,
+                                                         scope.branch.baseInfo.clusterName,
                                                          scope.branch.baseInfo.namespaceName,
                                                          scope.branch.editingRuleItem.clientAppId,
                                                          0,

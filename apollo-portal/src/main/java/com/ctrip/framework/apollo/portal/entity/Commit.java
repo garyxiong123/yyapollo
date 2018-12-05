@@ -1,6 +1,9 @@
 package com.ctrip.framework.apollo.portal.entity;
 
 import com.ctrip.framework.apollo.common.entity.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -9,6 +12,9 @@ import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor
 @Entity
 @Table(name = "Commit")
 @SQLDelete(sql = "Update Commit set isDeleted = 1 where id = ?")

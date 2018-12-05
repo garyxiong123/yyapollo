@@ -57,9 +57,9 @@ public class InstanceConfigAuditUtil implements InitializingBean {
   }
 
   public boolean audit(String appId, String clusterName, String dataCenter, String
-      ip, String configAppId, String configClusterName, String configNamespace, String releaseKey) {
+      ip, String configAppId, String configClusterName, String configNamespace, String releaseKey, String env) {
     return this.audits.offer(new InstanceConfigAuditModel(appId, clusterName, dataCenter, ip,
-        configAppId, configClusterName, configNamespace, releaseKey));
+        configAppId, configClusterName, configNamespace, releaseKey, env));
   }
 
   void doAudit(InstanceConfigAuditModel auditModel) {
@@ -136,8 +136,7 @@ public class InstanceConfigAuditUtil implements InitializingBean {
     instance.setClusterName(auditModel.getClusterName());
     instance.setDataCenter(auditModel.getDataCenter());
     instance.setIp(auditModel.getIp());
-
-//    instance.setEnv(auditModel.appId);
+    instance.setEnv(auditModel.getEnv());
     try {
       return instanceService.createInstance(instance).getId();
     } catch (DataIntegrityViolationException ex) {
@@ -187,10 +186,11 @@ public class InstanceConfigAuditUtil implements InitializingBean {
     private String configNamespace;
     private String releaseKey;
     private Date offerTime;
+    private String env;
 
     public InstanceConfigAuditModel(String appId, String clusterName, String dataCenter, String
         clientIp, String configAppId, String configClusterName, String configNamespace, String
-                                        releaseKey) {
+                                        releaseKey, String env) {
       this.offerTime = new Date();
       this.appId = appId;
       this.clusterName = clusterName;
@@ -200,6 +200,15 @@ public class InstanceConfigAuditUtil implements InitializingBean {
       this.configClusterName = configClusterName;
       this.configNamespace = configNamespace;
       this.releaseKey = releaseKey;
+      this.env = env;
+    }
+
+    public String getEnv() {
+      return env;
+    }
+
+    public void setEnv(String env) {
+      this.env = env;
     }
 
     public String getAppId() {

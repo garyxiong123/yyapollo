@@ -1,7 +1,7 @@
 sync_item_module.controller("SyncItemController",
                             ['$scope', '$location', '$window', 'toastr', 'AppService', 'AppUtil', 'ConfigService',
                              function ($scope, $location, $window, toastr, AppService, AppUtil, ConfigService) {
-
+                            debugger
                                  var params = AppUtil.parseParams($location.$$url);
                                  $scope.pageContext = {
                                      appId: params.appid,
@@ -91,7 +91,6 @@ sync_item_module.controller("SyncItemController",
                                                          + clusterDiff.diffs.updateItems.length
                                                          > 0;
                                                  }
-
                                                  if (clusterDiff.diffs.updateItems.length > 0) {
                                                      //赋予同步前的值
                                                      ConfigService.find_items(clusterDiff.namespace.appId,

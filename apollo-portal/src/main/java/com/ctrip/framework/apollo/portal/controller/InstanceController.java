@@ -10,6 +10,7 @@ import com.ctrip.framework.apollo.vo.Number;
 import com.ctrip.framework.apollo.portal.service.InstanceService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,11 +41,11 @@ public class InstanceController {
     }
 
     @RequestMapping(value = "/envs/{env}/instances/by-namespace", method = RequestMethod.GET)
-    public PageDTO<Instance> getByNamespace(@PathVariable String env, @RequestParam String appId,
-                                               @RequestParam String clusterName, @RequestParam String namespaceName,
-                                               @RequestParam(required = false) String instanceAppId,
-                                               @RequestParam(defaultValue = "0") int page,
-                                               @RequestParam(defaultValue = "20") int size) {
+    public Page<Instance> getByNamespace(@PathVariable String env, @RequestParam String appId,
+                                         @RequestParam String clusterName, @RequestParam String namespaceName,
+                                         @RequestParam(required = false) String instanceAppId,
+                                         @RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "20") int size) {
 
         return instanceService.getByNamespace(Env.valueOf(env), appId, clusterName, namespaceName, instanceAppId, page, size);
     }
